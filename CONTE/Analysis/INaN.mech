@@ -1,0 +1,30 @@
+% NEURON-ASTROCYTE PAIR, INCLUDING NA-GL TRANSPORT & CA DYNAMICS
+% Neuronal fast sodium current mechanism
+
+% Parameters
+PNa=10^(-5); % [cm/s]
+PNaL=2*10^(-9); % Not in paper, but on modelDB. Probably to include some 'leak' current.
+VM=-34;
+sigmaM=5;
+phiM=1;
+sigmaN=14;
+phiN=0.8;
+F=96485; %[C/mol]
+R=8.31*10^3; %[mJ/molK]
+T=310; %[K]
+nN=1;
+
+% Functions
+phi(X)=X*F/(R*T);
+INaN(X,n,Nai)=PNa*(minf(X).^3.*(1-n))*F.*phi(X).*((@Nae.*exp(-phi(X))-Nai)./(exp(-phi(X))-1));
+minf(X)=1./(1+exp(-(X-VM)./sigmaM));
+
+ninf(X)=1./(1+exp(-(X-VN)./sigmaN));
+tauN(X)=0.05 + 0.27./(1+exp((X+40)/12));
+
+n'=phiN*(ninf(X)-n)./tauN(X);
+n(0)=0.432356959113168*ones(1,nN);
+
+% Linkers
+@currentN += INaN(X,n,Na_i);
+@INaN += INaN(X,n,Na_i);

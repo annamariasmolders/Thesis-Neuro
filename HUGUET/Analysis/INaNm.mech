@@ -1,0 +1,30 @@
+% NEURON-ASTROCYTE NETWORK, INCLUDING GAP JUNCTIONS
+% Neuronal fast sodium current
+
+% Parameters
+gNa=3.0; %[mS/cm^2]
+VM=-34; %[mV] 
+tauM=5; 
+VN=-55; %[mV]
+tauN=14;
+phiN=0.8; %[ms^-1]
+R=8.31*10^3; %[J/molK]
+T=310; %[K]
+F=96485; %[C/mol]
+nN=50;
+
+% Functions
+minf(X) = 1./(1+exp(-(X-VM)/tauM));
+ninf(X) = 1./(1+exp(-(X-VN)/tauN));
+ntheta(X) = 0.05+0.27./(1+exp((X+40)/12));
+
+ENaN(@Nae,Na_i)=(R*T/F)*log(@Nae./Na_i);
+
+INaN(X,n,Na_i) = gNa.*minf(X).^3.*(1-n).*(X-ENaN(@Nae,Na_i)); 
+
+n' = phiN*(ninf(X)-n)./ntheta(X);
+n(0) = 0.25512*ones(1,nN);
+
+% Linkers
+@currentN += INaN(X,n,Na_i);
+@INaN += INaN(X,n,Na_i);

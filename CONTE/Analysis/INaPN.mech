@@ -1,0 +1,29 @@
+% NEURON-ASTROCYTE PAIR, INCLUDING NA-GL TRANSPORT & CA DYNAMICS
+% Neuronal persistent sodium current mechanism
+
+% Parameters
+PNaP=3*10^(-8); % [cm/s]
+VMp=-40;
+sigmaMp=6;
+phiMp=1;
+VHp=-48;
+sigmaHp=-6;
+phiHp=0.05;
+F=96485; %[C/mol]
+R=8.31*10^3; %[mJ/molK]
+T=310; %[K]
+nN=1;
+
+% Functions
+phi(X)=X*F/(R*T);
+INaPN(X,hp,Nai)=PNaP*mpinf(X).*hp*F.*phi(X).*((@Nae.*exp(-phi(X))-Nai)./(exp(-phi(X))-1));
+mpinf(X)=1./(1+exp(-(X-VMp)./sigmaMp));
+hpinf(X)=1./(1+exp(-(X-VHp)./sigmaHp));
+tauHp(X)=10000./cosh((X+49)/12);
+
+hp'=phiHp*(hpinf(X)-hp)./tauHp(X);
+hp(0)=0.8538036058454112*ones(1,nN);
+
+% Linkers
+@currentN += INaPN(X,hp,Na_i);
+@INaPN += INaPN(X,hp,Na_i);

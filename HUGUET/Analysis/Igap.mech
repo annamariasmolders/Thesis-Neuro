@@ -1,0 +1,18 @@
+% NEURON-ASTROCYTE NETWORK, INCLUDING GAP JUNCTIONS
+% Gap junction current
+
+% Parameters
+R=8.31*10^3; %[mJ/molK]
+T=310; %[K]
+F=96485; %[C/mol]
+PK=4.8*10^(-6); %[cm/s]
+PNa=1.5*10^(-8); %[cm/s]
+sigma=1;
+nN=2;
+nA=50;
+netcon= zeros(nN);
+
+% Functions/Linkers
+@IgapK += PK*Gapjunction(X,K_i,nN,netcon,sigma);
+@IgapNa += 0.8*PK*Gapjunction(X,Na_i,nN,netcon,sigma);
+@currentA += PK*Gapjunction(X,K_i,nN,netcon,sigma)+0.8*PK*Gapjunction(X,Na_i,nN,netcon,sigma);

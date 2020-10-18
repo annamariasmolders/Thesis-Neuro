@@ -1,0 +1,13 @@
+% SINGLE NEURON
+% CONDUCTANCE-BASED MODEL EXTENDED WITH ION CONCENTRATION DYNAMICS
+% Chloride current mechanism
+
+% Parameters
+gClL=0.05
+
+% Functions
+ECl=-81.9386
+ICl(X) = gClL.*(X-ECl)
+
+% Linkers
+@current += ICl(X)

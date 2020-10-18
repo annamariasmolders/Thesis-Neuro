@@ -1,0 +1,43 @@
+% NEURON-ASTROCYTE NETWORK, INCLUDING GAP JUNCTIONS: Genetic defect
+% Neuronal persistent sodium current mechanism
+
+% Parameters
+gNaP=0.4; %[mS/cm^2]
+VMp=-40; %[mV] 
+tauMp=6;
+VHp=-48; %[mV]
+tauHp=-6;
+phiH=0.05; %[ms^-1]
+nN=50;
+% 3-fold change
+k1=1.335;
+k2=1.665;
+sigma=0.1;
+Vmax=-49*ones(1,nN);
+
+R=8.31*10^3; %[J/molK]
+T=310; %[K]
+F=96485; %[C/mol]
+
+% Functions
+mpinf(X) = 1./(1+exp(-(X-VMp)/tauMp));
+hinf(X) = 1./(1+exp(-(X-VHp)/tauHp));
+htheta(X) = 10000./cosh((X+49)/12);
+
+ENaN(@Nae,Na_i)=(R*T/F)*log(@Nae./Na_i);
+
+INaPN(X,h,Na_i) = gNaP.*mpinf(X).*h.*(X-ENaN(@Nae,Na_i));
+
+% FOR WILD TYPE
+%h' = phiH*(hinf(X)-h)./htheta(X);
+%h(0) = 0.9751*ones(1,nN);
+% FOR MUTANT
+h' = (phiH*(hinf(X)-h)./htheta(X))./(k1*tanh(sigma*(X-Vmax))+k2);
+h(0) = 0.9751*ones(1,nN);
+
+%tauh(X) =1./(aH(X)+bH(X));
+%tauhMut(X) = tauh(X).*(k1*tanh(sigma*(X-Vmax))+k2);
+
+% Linkers
+@currentN += INaPN(X,h,Na_i);
+@INaPN += INaPN(X,h,Na_i);

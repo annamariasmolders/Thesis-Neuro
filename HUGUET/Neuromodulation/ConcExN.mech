@@ -1,0 +1,17 @@
+% NEURON-ASTROCYTE NETWORK, INCLUDING GAP JUNCTIONS: Neuromodulation
+% Update extracellular concentrations with neuronal intracellular currents
+
+% Parameters
+SN=922;
+F=96485;
+volN=2160; %[microm^3]
+volA=2000; %[microm^3];
+volE=0.1*(volA+volN);
+
+% Functions
+CurrNae(t) = (10*SN/(F*volE))*relINaN(t);
+CurrKe(t) = (10*SN/(F*volE))*relIKN(t);
+
+% Linkers
+@currNAE += CurrNae(t);
+@currKE += CurrKe(t);

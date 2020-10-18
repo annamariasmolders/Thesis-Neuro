@@ -1,0 +1,22 @@
+% SINGLE NEURON
+% CONDUCTANCE-BASED MODEL EXTENDED WITH ION CONCENTRATION DYNAMICS
+% Potassium current mechanism
+
+% Parameters
+gK=40
+gKL=0.05
+phi = 3
+
+% Functions
+aN(X) = 0.01*(X+34)./(1-exp(-0.1*(X+34)))
+bN(X) = .125*exp(-(X+44)/80)
+
+EK(@Ko,@Nai)=26.64*log(@Ko./(140 + (18 - @Nai)))
+IK(X,n) = gK.*n.^4.*(X-EK(@Ko, @Nai)) + gKL.*(X-EK(@Ko, @Nai))
+
+n' = phi*(aN(X).*(1-n) - bN(X).*n)
+n(0)=0.0942
+
+% Linkers
+@current += IK(X, n)
+@IK += IK(X, n)

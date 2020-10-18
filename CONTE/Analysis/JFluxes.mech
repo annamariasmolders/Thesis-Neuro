@@ -1,0 +1,19 @@
+% NEURON-ASTROCYTE PAIR, INCLUDING NA-GL TRANSPORT & CA DYNAMICS
+% Fluxes Jerout & Jserca due to IP3-activated receptors and SERCA pump
+
+% Parameters
+VIP=3000;
+IP3=0.3; % Concentration of IP3 (assumed constant)
+ECaL=0.01;
+VSRC=110;
+kSRC=0.4;
+
+% Functions
+Jerout(Ca_i,Ca_ER,hER)=(VIP*((IP3/(IP3+0.25))^3)*((Ca_i./(Ca_i+1)).^3).*(hER.^3)+ECaL).*(Ca_ER-Ca_i);
+Jserca(Ca_i)=(VSRC*(Ca_i).^2)./(kSRC^2 + (Ca_i).^2);
+hER'=(0.5-(Ca_i + 0.5).*hER)/4;
+hER(0)=0.9981259767393746*ones(1,nN);
+
+% Linkers
+@Jerout += Jerout(Ca_i,Ca_ER,hER);
+@Jserca += Jserca(Ca_i);

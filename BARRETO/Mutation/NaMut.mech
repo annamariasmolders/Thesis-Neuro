@@ -1,0 +1,43 @@
+% SINGLE NEURON: GENETIC DEFECT
+% CONDUCTANCE-BASED MODEL EXTENDED WITH ION CONCENTRATION DYNAMICS
+% Sodium current mechanism: MUTANT
+
+% Parameters
+gNa=100
+gNaL=0.0175
+beta = 7
+phi = 3
+Vmax = -45.8 % Position of maximum of wild-type time constant as a function of a voltage clamp (-80 -> 40 mV)
+% 3-fold change
+k1=1.335
+k2=1.665
+% 2-fold change
+%k1=0.75
+%k2=1.25
+sigma=0.1
+
+% Functions
+aM(X) = 0.1*(X+30)./(1-exp(-0.1.*(X+30)))
+bM(X) = 4.0*exp(-(X+55)/18)
+aH(X) = .07*exp(-(X+44)/20)
+bH(X) = 1./(1+exp(-0.1*(X+14)))
+
+ENa(@Nai)=26.64*log((144 - beta*(@Nai - 18))./@Nai)
+
+INa(X,m,hMut) = gNa.*m.^3.*hMut.*(X-ENa(@Nai)) + gNaL.*(X-ENa(@Nai))
+m' = (aM(X)./(aM(X) + bM(X))-m)./1e-2;
+m(0)=0.0192
+
+h' = phi*(aH(X).*(1-h)-bH(X).*h)
+h(0) = 0.9623
+
+% Mutation implemented as modified sodium current
+hMut' = (phi*(aH(X).*(1-h)-bH(X).*hMut))./(k1*tanh(sigma*(X-Vmax))+k2)
+hMut(0) = 0.9623
+
+tauh(X) =1./(aH(X)+bH(X))
+tauhMut(X) = tauh(X).*(k1*tanh(sigma*(X-Vmax))+k2)
+
+% Linkers
+@current += INa(X,m,hMut)
+@INa += INa(X,m,h)

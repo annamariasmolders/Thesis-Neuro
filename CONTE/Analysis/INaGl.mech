@@ -1,0 +1,19 @@
+% NEURON-ASTROCYTE PAIR, INCLUDING NA-GL TRANSPORT & CA DYNAMICS
+% Sodium-Glutamate transporter current mechanism
+
+% Parameters
+gNaGl=3*10^(-5); % [ms/cm^2]
+hr=0.5;
+F=96485; %[C/mol]
+R=8.31*10^3; %[mJ/molK]
+T=310; %[K]
+nN=1;
+
+% Functions
+Gl_i(t) = 1 + (volE/volA)*(0.001-@Gle);
+ENaGl(Nai,Ki,Gli)=(R*T/(2*F))*log(((@Nae./Nai).^3).*(Ki./@Ke).*(@Gle./Gli)*hr);
+INaGl(Nai,Ki,Gli)=gNaGl*(X-ENaGl(Nai,Ki,Gli));
+
+% Linkers
+@currentA += INaGl(Na_i,K_i,Gl_i(t));
+@INaGl += INaGl(Na_i,K_i,Gl_i(t));

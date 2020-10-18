@@ -1,0 +1,12 @@
+% NEURON-ASTROCYTE PAIR, INCLUDING NA-GL TRANSPORT & CA DYNAMICS
+% Neuronal pump current
+
+% Parameters
+rhoN=5;
+
+% Functions
+IPN(X,Nai) = rhoN*((@Ke./(2+@Ke)).^2).*((Nai./(7.7+Nai)).^3);
+
+% Linkers
+@currentN += IPN(X,Na_i);
+@IPN += IPN(X,Na_i);

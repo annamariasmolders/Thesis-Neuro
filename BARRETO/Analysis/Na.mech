@@ -1,0 +1,29 @@
+% SINGLE NEURON
+% CONDUCTANCE-BASED MODEL EXTENDED WITH ION CONCENTRATION DYNAMICS
+% Sodium current mechanism
+
+% Parameters
+gNa=100
+gNaL=0.0175
+beta = 7
+phi = 3
+
+% Functions
+aM(X) = 0.1*(X+30)./(1-exp(-0.1.*(X+30)))
+bM(X) = 4.0*exp(-(X+55)/18)
+aH(X) = .07*exp(-(X+44)/20)
+bH(X) = 1./(1+exp(-0.1*(X+14)))
+
+ENa(@Nai)=26.64*log((144 - beta*(@Nai - 18))./@Nai)
+
+INa(X,m,h) = gNa.*m.^3.*h.*(X-ENa(@Nai)) + gNaL.*(X-ENa(@Nai))
+
+m' = (aM(X)./(aM(X) + bM(X))-m)./1e-2;
+m(0)=0.0192
+
+h' = phi*(aH(X).*(1-h)-bH(X).*h)
+h(0)=0.9623
+
+% Linkers
+@current += INa(X,m,h)
+@INa += INa(X,m,h)

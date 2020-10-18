@@ -1,0 +1,17 @@
+% NEURON-ASTROCYTE NETWORK, INCLUDING GAP JUNCTIONS: Genetic defect
+% Update extracellular concentrations with astrocytal intracellular currents
+
+% Parameters
+SA=1600;
+F=96485;
+volN=2160; %[microm^3]
+volA=2000; %[microm^3];
+volE=0.1*(volA+volN);
+
+% Functions
+CurrNae(t) = (10*SA/(F*volE))*relINaA(t);
+CurrKe(t) = (10*SA/(F*volE))*relIKA(t);
+
+% Linkers
+@currNAE += CurrNae(t);
+@currKE += CurrKe(t);

@@ -1,0 +1,13 @@
+% NEURON-ASTROCYTE NETWORK, INCLUDING GAP JUNCTIONS
+% Neuronal leak current
+
+% Parameters
+gL=0.3; %[mS/cm^2]
+EL=-70; %[mV]
+
+% Functions
+IL(X) = gL.*(X-EL);
+
+% Linkers
+@currentN += IL(X);
+@IL += IL(X);

@@ -1,0 +1,34 @@
+% SINGLE NEURON
+% CONDUCTANCE-BASED MODEL EXTENDED WITH ION CONCENTRATION DYNAMICS
+% Ion concentration dynamics mechanism
+
+% Parameters
+gK=40
+gKL=0.05
+gamma = 4.45*10^(-2) % Converts membrane currents into millimolars per second
+beta = 7 % Ratio of intracellular to extracellular volume
+tau = 10^3 % Balances time units
+
+% Model parameters need to be initialized before vary can overwrite them
+% Choose 0 as a check that vary is included in dsSimulate options
+G=0
+eps=0
+kbath=0
+rho=0
+gamma=0
+
+% Functions
+Ipump(Nai,Ko) = rho*((1+exp((25-Nai)/3)).^(-1)).*(1./(1+exp(5.5-Ko)))
+Iglia(Ko) = G*(1+exp((18-Ko)/2.5)).^(-1)
+Idiff(Ko) = eps*(Ko - kbath)
+
+% For initial conditions: Best to run model first and take equilibrium values for ICs
+Ko' = (gamma*beta*@IK - 2*beta.*Ipump(Nai,Ko) - Iglia(Ko) - Idiff(Ko))/tau
+Ko(0)=7.3352
+
+Nai' = (-gamma*@INa - 3*Ipump(Nai,Ko))/tau
+Nai(0)=27.6293
+
+% Linkers
+@Nai += Nai
+@Ko += Ko

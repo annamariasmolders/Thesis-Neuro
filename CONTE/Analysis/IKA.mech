@@ -1,0 +1,16 @@
+% NEURON-ASTROCYTE PAIR, INCLUDING NA-GL TRANSPORT & CA DYNAMICS
+% Astrocytal potassium current mechanism
+
+% Parameters
+PK=4.8*10^(-6); %[cm/s]
+R=8.31*10^3; %[J/molK]
+T=310; %[K]
+F=96485; %[C/mol]
+
+% Functions
+phi(X) = X*F/(R*T);
+IKA(X,Ki) = PK*F*phi(X).*((@Ke.*exp(-phi(X)) - Ki)./(exp(-phi(X))-1));
+
+% Linkers
+@currentA += IKA(X,K_i);
+@IKA += IKA(X,K_i);

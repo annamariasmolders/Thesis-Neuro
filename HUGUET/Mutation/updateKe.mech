@@ -1,0 +1,4 @@
+% NEURON-ASTROCYTE NETWORK, INCLUDING GAP JUNCTIONS: Genetic defect
+% Link extracellular concentrations 
+
+@Ke += K_e_pre

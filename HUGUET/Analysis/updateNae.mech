@@ -1,0 +1,4 @@
+% NEURON-ASTROCYTE NETWORK, INCLUDING GAP JUNCTIONS
+% Link extracellular concentrations 
+
+@Nae += Na_e_pre 

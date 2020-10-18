@@ -1,0 +1,34 @@
+% SINGLE NEURON: NEUROMODULATION
+% CONDUCTANCE-BASED MODEL EXTENDED WITH ION CONCENTRATION DYNAMICS
+% Ion concentration dynamics mechanism
+
+% Parameters
+gK=40
+gKL=0.05
+beta = 7 % Ratio of intracellular to extracellular volume
+tau = 10^3 % Balances time units
+
+G=10
+eps=0.5
+rho=0.9
+gamma=1
+% For situation without CSD:
+%kbath=7
+
+% Functions
+Ipump(Nai,Ko) = rho*((1+exp((25-Nai)/3)).^(-1)).*(1./(1+exp(5.5-Ko)))
+Iglia(Ko) = G*(1+exp((18-Ko)/2.5)).^(-1)
+% For situation with CSD:
+Idiff(Ko)= eps*(Ko-kbathVar(t))
+% For situation without CSD:
+%Idiff(Ko)= eps*(Ko-kbath)
+
+Ko' = (gamma*beta*@IK - 2*beta.*Ipump(Nai,Ko) - Iglia(Ko) - Idiff(Ko))/tau
+Ko(0)=7.3352
+
+Nai' = (-gamma*@INa - 3*Ipump(Nai,Ko))/tau
+Nai(0)=27.6293
+
+% Linkers
+@Nai += Nai
+@Ko += Ko

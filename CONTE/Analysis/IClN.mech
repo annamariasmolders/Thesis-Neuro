@@ -1,0 +1,17 @@
+% NEURON-ASTROCYTE PAIR, INCLUDING NA-GL TRANSPORT & CA DYNAMICS
+% Chloride current mechanism
+
+% Parameters
+PCl=2*10^(-7); %[cm/s]
+F=96485; %[C/mol]
+R=8.31*10^3; %[mJ/molK]
+T=310; %[K]
+nN=1;
+
+% Functions
+phi(X)=X*F/(R*T);
+IClN(X,Cli)=-PCl*F.*(-phi(X)).*((@Cle.*exp(phi(X))-Cli)./(exp(phi(X))-1));
+
+% Linkers
+@currentN+=IClN(X,Cl_i);
+@IClN+=IClN(X,Cl_i);

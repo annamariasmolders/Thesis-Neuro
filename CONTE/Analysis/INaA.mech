@@ -1,0 +1,16 @@
+% NEURON-ASTROCYTE PAIR, INCLUDING NA-GL TRANSPORT & CA DYNAMICS
+% Astrocytal sodium current mechanism
+
+% Parameters
+PNa=0.015*10^(-6); % [cm/s]
+R=8.31*10^3; %[J/molK]
+T=310; %[K]
+F=96485; %[C/mol]
+
+% Functions
+phi(X) = X*F/(R*T);
+INaA(X,Nai) = PNa*F*phi(X).*((@Nae.*exp(-phi(X)) - Nai)./(exp(-phi(X))-1));
+
+% Linkers
+@currentA += INaA(X,Na_i);
+@INaA += INaA(X,Na_i);

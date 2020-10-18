@@ -1,0 +1,4 @@
+% NEURON-ASTROCYTE PAIR, INCLUDING NA-GL TRANSPORT & CA DYNAMICS
+% Link extracellular concentrations 
+
+@Ke += K_e_pre

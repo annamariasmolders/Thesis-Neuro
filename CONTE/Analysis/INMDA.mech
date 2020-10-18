@@ -1,0 +1,34 @@
+% NEURON-ASTROCYTE PAIR, INCLUDING NA-GL TRANSPORT & CA DYNAMICS
+% NMDA channel current mechanism
+
+% Parameters
+PNMDA=3*10^(-6); % [cm/s]
+rhoCa=3; % Because NMDA channel is more permeable to Ca2+
+VB=-10;
+sigmaB=16.13;
+VG=0.01;
+sigmaG=0.001;
+alphaG=0.5;
+betaG=1;
+F=96485; %[C/mol]
+R=8.31*10^3; %[mJ/molK]
+T=310; %[K]
+nN=1;
+
+% Functions
+phi(X)=X*F/(R*T);
+INaNMDA(X,Na_i)=PNMDA*sG.*binf(X)*F.*phi(X).*((@Nae.*exp(-phi(X))-Na_i)./(exp(-phi(X))-1));
+IKNMDA(X,K_i)=PNMDA*sG.*binf(X)*F.*phi(X).*((@Ke.*exp(-phi(X))-K_i)./(exp(-phi(X))-1));
+ICaNMDA(X,Ca_i,Ca_e)=2*rhoCa*PNMDA*sG.*binf(X)*F*2.*phi(X).*((Ca_e.*exp(-2*phi(X))-Ca_i)./(exp(-2*phi(X))-1));
+
+binf(X)=1./(1+exp(-(X-VB)./sigmaB));
+sGinf(t)=1./(1+exp(-(@Gle-VG)./sigmaG));
+sG'=alphaG.*sGinf(t).*(1-sG)-betaG*sG;
+sG(0)=0.002082416993486555*ones(1,nN);
+
+% Linkers
+@currentN += INaNMDA(X,Na_i) + IKNMDA(X,K_i) + ICaNMDA(X,Ca_i,Ca_e);
+@INMDA += INaNMDA(X,Na_i) + IKNMDA(X,K_i) + ICaNMDA(X,Ca_i,Ca_e);
+@INaNMDA += INaNMDA(X,Na_i);
+@IKNMDA += IKNMDA(X,K_i);
+@ICaNMDA += ICaNMDA(X,Ca_i,Ca_e);

@@ -1,0 +1,27 @@
+% NEURON-ASTROCYTE NETWORK, INCLUDING GAP JUNCTIONS
+% Neuronal potassium current
+
+% Parameters
+gK=5.0; %[mS/cm^2]
+VN=-55; %[mV]
+tauN=14; 
+phiN=0.8; %[ms^-1]
+R=8.31*10^3; %[mJ/molK]
+T=310; %[K]
+F=96485; %[C/mol]
+nN=50;
+
+% Functions
+ninf(X) = 1./(1+exp(-(X-VN)/tauN));
+ntheta(X) = 0.05 + 0.27./(1+exp((X+40)/12));
+
+EKN(KiN)=(R*T/F)*log(@Ke./KiN);
+
+IKN(X,n,KiN) = gK.*n.^4.*(X-EKN(KiN));
+
+n' = phiN*(ninf(X) - n)./ntheta(X);
+n(0) = 0.25512*ones(1,nN);
+
+% Linkers
+@currentN += IKN(X,n,K_i);
+@IKN += IKN(X,n,K_i);

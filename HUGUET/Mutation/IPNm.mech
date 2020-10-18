@@ -1,0 +1,14 @@
+% NEURON-ASTROCYTE NETWORK, INCLUDING GAP JUNCTIONS: Genetic defect
+% Neuronal pump current
+
+% Parameters
+rhoN=5; %[microA/cm^2]
+KKN=2; %[mM]
+KNaN=7.7; %[mM]
+
+% Functions
+IPN(X,Nai) = rhoN*((@Ke./(KKN+@Ke)).^2).*((Nai./(KNaN+Nai)).^3);
+
+% Linkers
+@currentN += IPN(X,Na_i);
+@IPN += IPN(X,Na_i);

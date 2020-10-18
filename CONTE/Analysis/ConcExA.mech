@@ -1,0 +1,20 @@
+% NEURON-ASTROCYTE PAIR, INCLUDING NA-GL TRANSPORT & CA DYNAMICS
+% Update extracellular concentrations with astrocytal intracellular currents
+
+% Parameters
+SA=1600;
+F=96485;
+volN=2160; %[microm^3]
+volA=2000; %[microm^3]
+alpha0=0.05; 
+volE=alpha0*volN; % extracellular volume is a fixed fraction of neuron's volume
+
+% Functions
+CurrNae(t) = (10*SA/(F*volE))*(relINaA(t)+3*relINaGl(t));
+CurrKe(t) = (10*SA/(F*volE))*(relIKA(t)-relINaGl(t));
+CurrGle(t)= (10*SA/(F*volE))*relINaGl(t);
+
+% Linkers
+@currNAE += CurrNae(t);
+@currKE += CurrKe(t);
+@currGLE += CurrGle(t);

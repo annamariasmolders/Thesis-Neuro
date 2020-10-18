@@ -1,0 +1,15 @@
+% NEURON-ASTROCYTE NETWORK, INCLUDING GAP JUNCTIONS
+% Astrocytal pump current
+
+% Parameters
+rhoA=5; %[microA/cm^2]
+KKA=2; %[mM]
+KNaA=7.7; %[mM] % 
+
+% Functions
+IPA(Nai) = rhoA*((@Ke./(KKA+@Ke)).^2).*((Nai./(KNaA+Nai)).^3);
+
+% Linkers
+@currentA += IPA(Na_i);
+@IPA += IPA(Na_i);
+

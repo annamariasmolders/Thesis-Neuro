@@ -1,0 +1,16 @@
+% NEURON-ASTROCYTE NETWORK, INCLUDING GAP JUNCTIONS
+% Astrocytal sodium current
+
+% Parameters
+PNa=1.5*10^(-8); %[cm/s]
+R=8.31*10^3; %[J/molK]
+T=310; %[K]
+F=96485; %[C/mol]
+
+% Functions
+phi(X) = X*F/(R*T);
+INaA(X,Nai) = PNa*F*phi(X).*((@Nae.*exp(-phi(X)) - Nai)./(exp(-phi(X))-1));
+
+% Linkers
+@currentA += INaA(X,Na_i);
+@INaA += INaA(X,Na_i);
