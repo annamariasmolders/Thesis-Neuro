@@ -1,3 +1,6 @@
+## Introduction
+In this study, three different models of cortical spreading depression (CSD) based on Hodgkin-Huxley type network models were implemented using the DynaSim toolbox in MATLAB. Each model adds a different biological mechanism that is believed to be involved in migraine (with aura), including Na+ and K+ concentration dynamics, electrically coupled astrocytes, and glutamate transport and diffusion. Simulations on single neurons and neuron/astrocyte pairs were done to investigate the feasibility of neuromodulation and to analyze the optimal waveform of a current applied at the neuronal level. Additionally, a genetic defect linked to migraine was implemented to review its implications on CSD.
+
 ## Folder Structure
 
 ### Analysis
